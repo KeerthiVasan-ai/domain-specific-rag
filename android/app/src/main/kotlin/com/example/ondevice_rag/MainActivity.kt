@@ -26,7 +26,7 @@ class MainActivity : FlutterActivity() {
 
         // Only add chunks if database is empty (first run)
         if (repository.count() == 0L) {
-            val chunks = chunkDocument(Document.trainedContent)
+            val chunks = chunkDocument(Document.newDocument)
             Log.d("RAG_DEBUG", "Chunked document into ${chunks.size} chunks")
             chunks.forEachIndexed { index, text ->
                 repository.add(RagChunk(id = 0, text = text, embedding = model.embed(text)))
