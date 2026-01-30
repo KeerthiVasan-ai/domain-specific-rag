@@ -106,4 +106,41 @@ applications.""".trimIndent()
        
     """.trimIndent()
 
+    val finalDocument = """
+        Retrieval-Augmented Generation (RAG) is a technique in artificial intelligence that combines information retrieval with natural language generation to produce accurate and grounded responses. Instead of relying only on a language model’s internal parameters, a RAG system retrieves relevant information from an external collection of documents and uses that information as context when generating answers. In simple terms, RAG allows a model to search for knowledge first and then generate responses based on real documents rather than memory alone.
+
+        Traditional language models store knowledge inside their trained weights. Once training is complete, this knowledge becomes static and cannot be easily updated. Adding new information or correcting existing knowledge usually requires retraining the entire model, which is computationally expensive and time-consuming. This limitation makes traditional language models difficult to maintain in real-world applications where information changes frequently. Retrieval-Augmented Generation solves this problem by separating knowledge storage from language understanding.
+
+        A RAG system is composed of two main components: a retriever and a generator. The retriever is responsible for searching a document collection and identifying text that is relevant to a user’s query. The generator then takes the original query along with the retrieved text and produces a coherent and context-aware response. The quality of a RAG system depends heavily on how accurately the retriever selects relevant information.
+
+        Before retrieval can take place, documents must undergo preprocessing. Raw text is cleaned and divided into smaller units known as chunks. Chunking is required because embedding models operate on limited-length inputs and cannot process entire documents at once. Each chunk should represent a complete and meaningful unit of information. Poor chunking can lead to fragmented meaning and lower retrieval quality.
+
+        After chunking, each document chunk is converted into a vector embedding. An embedding is a numerical representation of text that captures semantic meaning in a high-dimensional space. Texts with similar meanings are mapped to nearby points in this vector space. The same embedding model is used to encode both document chunks and user queries so that similarity comparisons are meaningful.
+
+        In a RAG system, document embeddings are stored inside a vector store. The vector store acts as the external memory of the system, maintaining a relationship between embeddings and their original text chunks. When a user submits a query, the query text is also converted into an embedding. This query embedding is compared against stored document embeddings using similarity measures such as cosine similarity or dot product. The chunks with the highest similarity scores are retrieved as the most relevant results.
+
+        The retrieval process typically returns the top-k document chunks based on similarity scores. These retrieved chunks are assumed to contain information relevant to the user’s question. Retrieval quality is critical, because irrelevant or noisy chunks can mislead the generation component and result in incorrect answers. A well-designed retriever significantly improves the overall effectiveness of a RAG system.
+
+        The generation component in a RAG system differs from a standalone language model. Instead of generating responses in isolation, the generator receives both the user query and the retrieved document chunks as input. This augmented context constrains the model’s output and encourages it to base responses on retrieved evidence. As a result, RAG systems produce more factual and reliable answers.
+
+        One of the key advantages of Retrieval-Augmented Generation is its ability to reduce hallucination. Hallucination occurs when a language model generates information that is not supported by factual evidence. Because RAG systems ground responses in retrieved documents, the model is less likely to invent details. This makes RAG especially valuable in domain-specific and high-stakes applications.
+
+        Training can further improve retrieval quality in RAG systems. Some implementations fine-tune the retriever using supervised or contrastive learning methods. A common approach is triplet loss training, where the model learns from a query, a relevant document chunk, and an irrelevant chunk. The objective is to bring the query embedding closer to the relevant chunk while pushing it away from the irrelevant one.
+
+        Through training, the retriever gradually learns to align semantic representations with user intent. Improved retrieval accuracy leads directly to better generation quality, since the generator receives more relevant context. Over time, this training enables RAG systems to adapt to specific domains and usage patterns.
+
+        Chunk size is an important design decision in Retrieval-Augmented Generation. Smaller chunks tend to improve retrieval precision because they focus on specific concepts, while larger chunks preserve more contextual information. There is no universal optimal chunk size. Many practical systems use overlapping chunks to balance precision and context retention.
+
+        Embedding dimensionality also plays a significant role in system performance. Higher-dimensional embeddings capture richer semantic information but require more computation and memory. Lower-dimensional embeddings are more efficient and better suited for on-device environments, though they may sacrifice some expressive power. Designers must balance accuracy and resource constraints carefully.
+
+        RAG systems are particularly effective for domain-specific applications such as educational platforms, internal documentation assistants, enterprise knowledge bases, and technical support tools. By restricting the document collection to trusted sources, the system ensures that responses remain grounded within known boundaries.
+
+        Another strength of Retrieval-Augmented Generation is adaptability. Because knowledge is stored externally, documents can be added, removed, or updated without modifying the core language model. This enables rapid iteration and keeps systems up to date without expensive retraining cycles.
+
+        A well-designed RAG system should handle failure cases gracefully. If retrieval does not return sufficiently relevant documents, the system should acknowledge the lack of information rather than generating unsupported answers. This behavior improves user trust and system reliability.
+
+        Evaluating RAG systems requires more than traditional language model metrics. Developers must assess retrieval accuracy, relevance of retrieved chunks, and consistency between responses and source documents. Metrics such as recall@k, precision@k, and faithfulness are commonly used.
+
+        Although Retrieval-Augmented Generation introduces additional system complexity, this complexity is often justified by improvements in accuracy, reliability, and controllability. By integrating retrieval with generation, RAG provides a scalable and trustworthy approach to building intelligent question-answering systems.
+    """.trimIndent()
 }

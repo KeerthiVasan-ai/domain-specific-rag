@@ -4,18 +4,22 @@ import com.example.ondevice_rag.tflite.RagTFLiteModel
 
 class RagEngine(private val model: RagTFLiteModel, private val repository: RagRepository) {
 
-    /** Retrieval using ObjectBox HNSW vector search */
-    fun retrieveTopK(question: String, k: Int = 3): List<RagResult> {
+    /** Retrieval using ObjectBox HNSW vector search with TFLite re-scoring */
+    fun retrieveTopK(question: String, k: Int = 4): List<RagResult> {
         val queryEmb = model.embed(question)
 
         // Use ObjectBox HNSW index for O(log n) similarity search
-        return repository.findNearestNeighbors(queryEmb, k).map { (chunk, distance) ->
-            RagResult(
-                    chunk = chunk,
-                    // Convert distance to similarity score (lower distance = higher similarity)
-                    score = 1f / (1f + distance)
-            )
-        }
+        // Then re-rank using TFLite's score function for accurate cosine similarity (matching
+        // Python)
+        return repository
+                .findNearestNeighbors(queryEmb, k)
+                .map { (chunk, _) ->
+                    // Use TFLite model's score function (dot product of normalized vectors = cosine
+                    // similarity)
+                    val score = model.score(queryEmb, chunk.embedding)
+                    RagResult(chunk = chunk, score = score)
+                }
+                .sortedByDescending { it.score }
     }
 
     /** Training = Python trainer.train + re-embed */

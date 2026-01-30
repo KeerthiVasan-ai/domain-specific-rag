@@ -1,30 +1,28 @@
 package com.example.ondevice_rag.db
 
+import com.example.ondevice_rag.rag.RagChunk
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.HnswIndex
 import io.objectbox.annotation.Id
-import com.example.ondevice_rag.rag.RagChunk
+import io.objectbox.annotation.VectorDistanceType
 
 @Entity
 data class RagChunkEntity(
     @Id var id: Long = 0,
     var text: String = "",
-    @HnswIndex(dimensions = 128)
+    @HnswIndex(dimensions = 128, distanceType = VectorDistanceType.COSINE)
     var embedding: FloatArray = FloatArray(0)
 ) {
     companion object {
-        fun from(chunk: RagChunk): RagChunkEntity = RagChunkEntity(
-            id = chunk.id.toLong(),
-            text = chunk.text,
-            embedding = chunk.embedding
-        )
+        fun from(chunk: RagChunk): RagChunkEntity =
+            RagChunkEntity(
+                id = chunk.id.toLong(),
+                text = chunk.text,
+                embedding = chunk.embedding
+            )
     }
 
-    fun toRagChunk(): RagChunk = RagChunk(
-        id = id.toInt(),
-        text = text,
-        embedding = embedding
-    )
+    fun toRagChunk(): RagChunk = RagChunk(id = id.toInt(), text = text, embedding = embedding)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

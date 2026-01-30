@@ -26,7 +26,7 @@ class MainActivity : FlutterActivity() {
 
         // Only add chunks if database is empty (first run)
         if (repository.count() == 0L) {
-            val chunks = chunkDocument(Document.newDocument)
+            val chunks = chunkDocument(Document.finalDocument)
             Log.d("RAG_DEBUG", "Chunked document into ${chunks.size} chunks")
             chunks.forEachIndexed { index, text ->
                 repository.add(RagChunk(id = 0, text = text, embedding = model.embed(text)))
@@ -38,9 +38,11 @@ class MainActivity : FlutterActivity() {
 
         ragEngine = RagEngine(model, repository)
 
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, channel).setMethodCallHandler {
-                call,
-                result ->
+        MethodChannel(
+            flutterEngine.dartExecutor.binaryMessenger,
+            channel
+        ).setMethodCallHandler { call,
+                                 result ->
             when (call.method) {
                 "ask" -> {
                     val question = call.argument<String>("question")!!
@@ -48,12 +50,13 @@ class MainActivity : FlutterActivity() {
                     val results = ragEngine.retrieveTopK(question)
 
                     result.success(
-                            mapOf(
-                                    "answer" to results.first().chunk.text,
-                                    "suggestions" to results.drop(1).map { it.chunk.text }
-                            )
+                        mapOf(
+                            "answer" to results.first().chunk.text,
+                            "suggestions" to results.drop(1).map { it.chunk.text }
+                        )
                     )
                 }
+
                 "train" -> {
                     val question = call.argument<String>("question")!!
                     val positive = call.argument<String>("positive")!!
@@ -69,13 +72,19 @@ class MainActivity : FlutterActivity() {
                         result.error("CHUNK_NOT_FOUND", "Could not find chunks", null)
                     }
                 }
+
                 else -> result.notImplemented()
             }
         }
     }
 
+    //    fun chunkDocument(text: String): List<String> {
+//        return text.split(Regex("(?<=[.!?])\\s+")).map { it.trim() }.filter {
+//            it.split(" ").size >= 6
+//        }
+//    }
     fun chunkDocument(text: String): List<String> {
-        return text.split(Regex("(?<=[.!?])\\s+")).map { it.trim() }.filter {
+        return text.split("\n\n").map { it.trim() }.filter {
             it.split(" ").size >= 6
         }
     }
