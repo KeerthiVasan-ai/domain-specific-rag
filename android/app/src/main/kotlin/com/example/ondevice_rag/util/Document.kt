@@ -61,4 +61,9 @@ processing occurs locally, sensitive user information never leaves the
 device, making it suitable for offline-first and privacy-sensitive
 applications.""".trimIndent()
 
+    val newDocument = """
+        
+        
+    """.trimIndent()
+
 }

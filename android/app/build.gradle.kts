@@ -47,4 +47,11 @@ dependencies {
     implementation("org.tensorflow:tensorflow-lite:2.17.0")
     //noinspection Aligned16KB
     implementation("org.tensorflow:tensorflow-lite-select-tf-ops:2.16.1")
+    
+    // ObjectBox vector database
+    val objectboxVersion: String by rootProject.extra
+    implementation("io.objectbox:objectbox-android:$objectboxVersion")
 }
+
+// Apply ObjectBox plugin after dependencies block
+apply(plugin = "io.objectbox")

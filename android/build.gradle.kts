@@ -1,3 +1,16 @@
+buildscript {
+    val objectboxVersion by extra("5.1.0")
+
+    dependencies {
+        classpath("io.objectbox:objectbox-gradle-plugin:$objectboxVersion")
+    }
+
+    repositories {
+        mavenCentral()
+        google()
+    }
+}
+
 allprojects {
     repositories {
         google()
